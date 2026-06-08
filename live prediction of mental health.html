@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Social Media & Mental Health Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0D0F1A;
+  --surface: #131629;
+  --surface2: #1C2038;
+  --surface3: #232846;
+  --text: #EEF0FF;
+  --muted: #8890BB;
+  --accent: #7B6EF6;
+  --accent2: #C084FC;
+  --accent-glow: rgba(123,110,246,0.18);
+  --gold: #F0C060;
+  --gold-light: rgba(240,192,96,0.12);
+  --border: rgba(120,130,200,0.14);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --danger: #F87171;
+  --success: #6EE7B7;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'Outfit', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem 5rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Atmospheric background */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse, rgba(123,110,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px; right: -150px;
+  width: 600px; height: 500px;
+  background: radial-gradient(ellipse, rgba(192,132,252,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid texture overlay */
+.grid-texture {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(120,130,200,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,130,200,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-light);
+  border: 1px solid rgba(240,192,96,0.25);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 1.4rem;
+}
+
+.badge::before {
+  content: '◆';
+  font-size: 8px;
+}
+
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5.5vw, 3.2rem);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #EEF0FF 0%, #C084FC 60%, #7B6EF6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.header h1 em {
+  font-style: italic;
+}
+
+.header p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Research tag */
+.research-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1rem;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.research-tag span {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* Progress */
+.progress-wrap {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.progress-pct {
+  color: var(--accent2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.progress-bg {
+  height: 3px;
+  background: var(--surface3);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 100px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 12px rgba(123,110,246,0.5);
+}
+
+/* Section separator */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent2);
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(192,132,252,0.3), transparent);
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 2.2rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+  animation: slideUp 0.4s ease both;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(123,110,246,0.4), transparent);
+}
+
+.card:hover {
+  border-color: rgba(123,110,246,0.3);
+}
+
+.card.answered {
+  border-color: rgba(123,110,246,0.4);
+}
+
+.card.answered::before {
+  background: linear-gradient(90deg, transparent, rgba(192,132,252,0.6), transparent);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.q-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.q-num::before {
+  content: '';
+  width: 20px; height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 1.4rem;
+}
+
+/* Options */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  transition: all 0.18s ease;
+  width: 100%;
+}
+
+.opt:hover {
+  background: rgba(123,110,246,0.1);
+  border-color: rgba(123,110,246,0.4);
+  color: #c4baff;
+}
+
+.opt.selected {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: #c4baff;
+  font-weight: 500;
+}
+
+.opt .indicator {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s;
+}
+
+.opt.selected .indicator {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.opt.selected .indicator::after {
+  content: '✓';
+  font-size: 10px;
+  color: white;
+  font-weight: 700;
+}
+
+/* Checkbox style for multi-select */
+.opt .cb-indicator {
+  width: 18px; height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--muted);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s;
+}
+
+.opt.selected .cb-indicator {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.opt.selected .cb-indicator::after {
+  content: '✓';
+  font-size: 10px;
+  color: white;
+  font-weight: 700;
+}
+
+/* Scale slider */
+.scale-wrap {
+  padding: 0.5rem 0;
+}
+
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.scale-track {
+  display: flex;
+  gap: 10px;
+}
+
+.scale-btn {
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 50px;
+}
+
+.scale-btn:hover {
+  background: rgba(123,110,246,0.12);
+  border-color: var(--accent);
+  color: var(--accent2);
+  transform: translateY(-2px);
+}
+
+.scale-btn.selected {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(123,110,246,0.35);
+}
+
+/* Text input */
+.text-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+  background: rgba(123,110,246,0.06);
+}
+
+.text-input::placeholder { color: var(--muted); }
+
+/* Nav */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.22s;
+  letter-spacing: 0.02em;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  border-color: rgba(123,110,246,0.4);
+  color: var(--text);
+}
+
+.btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(123,110,246,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 28px rgba(123,110,246,0.5);
+  transform: translateY(-1px);
+}
+
+/* Results screen */
+.results {
+  display: none;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  animation: slideUp 0.5s ease;
+}
+
+.result-ring {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  border: 3px solid transparent;
+}
+
+.result-ring.low {
+  background: radial-gradient(circle, rgba(110,231,183,0.1), transparent);
+  border-color: #6EE7B7;
+  color: #6EE7B7;
+}
+
+.result-ring.medium {
+  background: radial-gradient(circle, rgba(240,192,96,0.1), transparent);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.result-ring.high {
+  background: radial-gradient(circle, rgba(248,113,113,0.1), transparent);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.result-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 440px;
+  margin: 0 auto 2rem;
+}
+
+.score-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+
+.score-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+}
+
+.score-item .s-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: var(--accent2);
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.score-item .s-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+.btn-restart {
+  margin-top: 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 32px;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-restart:hover {
+  border-color: var(--accent);
+  color: var(--accent2);
+}
+
+/* Skip notice */
+.skip-notice {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 0.4rem;
+}
+
+/* Tooltip for scale */
+.scale-tooltip {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+}
+</style>
+</head>
+<body>
+<div class="grid-texture"></div>
+
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">M.Sc Data Science · 4th Semester</div>
+    <h1>Social Media &amp; <em>Mental Health</em> Assessment</h1>
+    <p>A research instrument for predicting mental health risk based on social media usage patterns. Your responses are anonymous and contribute to academic research.</p>
+    <div class="research-tag">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#7B6EF6"/><path d="M6 3v3.5L8 8" stroke="#7B6EF6" stroke-linecap="round"/></svg>
+      Supervised by <span>Dr. Ranjana Gupta &amp; Dr. Minakshi Pachauri</span> · Dr. Bhimrao Ambedkar University
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progressLabel">Question 1 of 20</span>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <div class="progress-bg">
+      <div class="progress-fill" id="progressBar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Questions Container -->
+  <div id="questionsContainer"></div>
+
+  <!-- Nav -->
+  <div class="nav-row" id="navRow">
+    <button class="btn btn-ghost" id="prevBtn" onclick="prevQ()" disabled>← Back</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">Continue →</button>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="resultsScreen">
+    <div class="result-ring" id="resultRing">
+      <span id="resultScore">—</span>
+      <span class="result-label" id="resultRiskLabel">Risk</span>
+    </div>
+    <div class="result-title" id="resultTitle">Your Mental Health Profile</div>
+    <div class="result-desc" id="resultDesc"></div>
+    <div class="score-breakdown">
+      <div class="score-item">
+        <div class="s-val" id="addictionScore">—</div>
+        <div class="s-label">Addiction Score</div>
+      </div>
+      <div class="score-item">
+        <div class="s-val" id="behaviouralScore">—</div>
+        <div class="s-label">Behavioural Score</div>
+      </div>
+      <div class="score-item">
+        <div class="s-val" id="mentalScore">—</div>
+        <div class="s-label">Mental Score</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7;">
+      This assessment is for research purposes only and is not a clinical diagnosis.<br>
+      Please consult a mental health professional for any concerns.
+    </p>
+    <button class="btn-restart" onclick="restart()">↺ Retake Assessment</button>
+  </div>
+
+</div>
+
+<script>
+// ─── Question Definitions ────────────────────────────────────────────────────
+const questions = [
+  // Demographic
+  {
+    id: 'q1', section: '📋 Demographics', type: 'number',
+    text: 'What is your age?',
+    placeholder: 'Enter your age (e.g. 21)',
+    key: 'age'
+  },
+  {
+    id: 'q2', type: 'radio',
+    text: 'What is your gender?',
+    options: ['Male', 'Female', 'Non-binary', 'Prefer not to say'],
+    key: 'gender'
+  },
+  {
+    id: 'q3', type: 'radio',
+    text: 'What is your current relationship status?',
+    options: ['Single', 'In a relationship', 'Married', 'Divorced', 'It\'s complicated'],
+    key: 'relationship'
+  },
+  {
+    id: 'q4', type: 'radio',
+    text: 'What is your current occupation status?',
+    options: ['University Student', 'School Student', 'Employed', 'Self-employed', 'Unemployed', 'Other'],
+    key: 'occupation'
+  },
+  {
+    id: 'q5', type: 'radio',
+    text: 'What type of organization are you affiliated with?',
+    options: ['University', 'School', 'Company (Private)', 'Company (Government)', 'None'],
+    key: 'org'
+  },
+  // Social Media Usage
+  {
+    id: 'q6', section: '📱 Social Media Usage', type: 'radio',
+    text: 'Do you actively use social media platforms?',
+    options: ['Yes', 'No'],
+    key: 'usesSocial'
+  },
+  {
+    id: 'q7', type: 'checkbox',
+    text: 'Which social media platforms do you commonly use? (Select all that apply)',
+    options: ['Instagram', 'Facebook', 'YouTube', 'Twitter / X', 'Snapchat', 'TikTok', 'Reddit', 'LinkedIn', 'Pinterest', 'Discord'],
+    key: 'platforms'
+  },
+  {
+    id: 'q8', type: 'radio',
+    text: 'On average, how much time do you spend on social media each day?',
+    options: ['Less than 1 hour', 'Between 1 and 2 hours', 'Between 2 and 3 hours', 'Between 3 and 4 hours', 'More than 4 hours', 'More than 5 hours'],
+    key: 'dailyTime'
+  },
+  // Behavioral Patterns (Likert 1–5)
+  {
+    id: 'q9', section: '🧠 Behavioural Patterns', type: 'scale',
+    text: 'How often do you find yourself using social media without a specific purpose (mindless scrolling)?',
+    scaleMin: 'Never', scaleMax: 'Very Often',
+    key: 'purposeless', group: 'addiction'
+  },
+  {
+    id: 'q10', type: 'scale',
+    text: 'How often does social media distract you when you are busy with something important?',
+    scaleMin: 'Never', scaleMax: 'Very Often',
+    key: 'distracted', group: 'addiction'
+  },
+  {
+    id: 'q11', type: 'scale',
+    text: 'Do you feel restless or uneasy when you haven\'t checked social media in a while?',
+    scaleMin: 'Never', scaleMax: 'Always',
+    key: 'restless', group: 'addiction'
+  },
+  {
+    id: 'q12', type: 'scale',
+    text: 'Overall, how easily distracted are you in general (not just by social media)?',
+    scaleMin: 'Not at all', scaleMax: 'Extremely',
+    key: 'distraction', group: 'addiction'
+  },
+  {
+    id: 'q13', type: 'scale',
+    text: 'How often do you seek validation through social media (likes, comments, followers)?',
+    scaleMin: 'Never', scaleMax: 'All the time',
+    key: 'validation', group: 'addiction'
+  },
+  // Social Comparison
+  {
+    id: 'q14', section: '🔍 Social Comparison', type: 'scale',
+    text: 'How often do you compare yourself to more successful or attractive people you see on social media?',
+    scaleMin: 'Never', scaleMax: 'Very Often',
+    key: 'comparison', group: 'behavioural'
+  },
+  {
+    id: 'q15', type: 'scale',
+    text: 'When you make these comparisons, how do you typically feel about yourself afterwards?',
+    scaleMin: 'Much better', scaleMax: 'Much worse',
+    key: 'comparisonFeel', group: 'behavioural'
+  },
+  // Mental Health Indicators
+  {
+    id: 'q16', section: '💭 Mental Health Indicators', type: 'scale',
+    text: 'How much are you bothered by worries or anxious thoughts in general?',
+    scaleMin: 'Not at all', scaleMax: 'Extremely',
+    key: 'worries', group: 'mental'
+  },
+  {
+    id: 'q17', type: 'scale',
+    text: 'Do you find it difficult to concentrate on tasks or activities?',
+    scaleMin: 'Never', scaleMax: 'Always',
+    key: 'concentration', group: 'mental'
+  },
+  {
+    id: 'q18', type: 'scale',
+    text: 'How often do you feel depressed, low in mood, or emotionally down?',
+    scaleMin: 'Never', scaleMax: 'Very Often',
+    key: 'depression', group: 'mental'
+  },
+  {
+    id: 'q19', type: 'scale',
+    text: 'How frequently does your interest or motivation in daily activities fluctuate?',
+    scaleMin: 'Rarely', scaleMax: 'Constantly',
+    key: 'fluctuation', group: 'mental'
+  },
+  {
+    id: 'q20', type: 'scale',
+    text: 'How often do you experience sleep-related problems (difficulty falling asleep, waking up, poor quality sleep)?',
+    scaleMin: 'Never', scaleMax: 'Every night',
+    key: 'sleep', group: 'mental'
+  }
+];
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let current = 0;
+const answers = {};
+
+// ─── Render ──────────────────────────────────────────────────────────────────
+function renderQuestion(idx) {
+  const q = questions[idx];
+  const container = document.getElementById('questionsContainer');
+  const existing = document.getElementById('activeCard');
+  if (existing) {
+    existing.style.animation = 'none';
+    existing.style.opacity = '0';
+    existing.style.transform = 'translateY(-10px)';
+    setTimeout(() => { existing.remove(); build(); }, 180);
+  } else {
+    build();
+  }
+
+  function build() {
+    const card = document.createElement('div');
+    card.className = 'card' + (answers[q.key] !== undefined ? ' answered' : '');
+    card.id = 'activeCard';
+
+    let html = '';
+
+    if (q.section) {
+      html += `<div class="section-label">${q.section}</div>`;
+    }
+
+    const displayNum = idx + 1;
+    html += `<div class="q-num">Question ${displayNum} / ${questions.length}</div>`;
+    html += `<div class="q-text">${q.text}</div>`;
+
+    if (q.type === 'number') {
+      const val = answers[q.key] || '';
+      html += `<input class="text-input" type="number" id="numInput" placeholder="${q.placeholder}" value="${val}" min="10" max="100" oninput="saveAnswer('${q.key}', this.value)"/>`;
+    }
+
+    if (q.type === 'radio') {
+      html += `<div class="options">`;
+      q.options.forEach(opt => {
+        const sel = answers[q.key] === opt ? ' selected' : '';
+        html += `<button class="opt${sel}" onclick="selectRadio('${q.key}', '${opt}', this)">
+          <span class="indicator"></span>${opt}
+        </button>`;
+      });
+      html += `</div>`;
+    }
+
+    if (q.type === 'checkbox') {
+      const saved = answers[q.key] || [];
+      html += `<div class="platform-grid">`;
+      q.options.forEach(opt => {
+        const sel = saved.includes(opt) ? ' selected' : '';
+        html += `<button class="opt${sel}" onclick="toggleCheckbox('${q.key}', '${opt}', this)">
+          <span class="cb-indicator"></span>${opt}
+        </button>`;
+      });
+      html += `</div>`;
+      html += `<div class="skip-notice">Select all that apply · at least one required</div>`;
+    }
+
+    if (q.type === 'scale') {
+      const saved = answers[q.key];
+      html += `<div class="scale-wrap">
+        <div class="scale-labels"><span>${q.scaleMin}</span><span>${q.scaleMax}</span></div>
+        <div class="scale-track">`;
+      for (let i = 1; i <= 5; i++) {
+        const sel = saved === i ? ' selected' : '';
+        html += `<button class="scale-btn${sel}" onclick="selectScale('${q.key}', ${i}, this)">${i}</button>`;
+      }
+      html += `</div>
+        <div class="scale-tooltip">1 = ${q.scaleMin} &nbsp; · &nbsp; 5 = ${q.scaleMax}</div>
+      </div>`;
+    }
+
+    card.innerHTML = html;
+    container.appendChild(card);
+    updateProgress();
+    updateNav();
+  }
+}
+
+// ─── Answer Handlers ──────────────────────────────────────────────────────────
+function saveAnswer(key, val) {
+  answers[key] = val;
+  const card = document.getElementById('activeCard');
+  if (card && val) card.classList.add('answered');
+}
+
+function selectRadio(key, val, btn) {
+  answers[key] = val;
+  btn.closest('.options').querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('activeCard').classList.add('answered');
+  setTimeout(nextQ, 280);
+}
+
+function toggleCheckbox(key, val, btn) {
+  if (!answers[key]) answers[key] = [];
+  const arr = answers[key];
+  const i = arr.indexOf(val);
+  if (i === -1) { arr.push(val); btn.classList.add('selected'); }
+  else { arr.splice(i, 1); btn.classList.remove('selected'); }
+  document.getElementById('activeCard').classList.toggle('answered', arr.length > 0);
+}
+
+function selectScale(key, val, btn) {
+  answers[key] = val;
+  btn.closest('.scale-track').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('activeCard').classList.add('answered');
+  setTimeout(nextQ, 300);
+}
+
+// ─── Navigation ──────────────────────────────────────────────────────────────
+function nextQ() {
+  if (!canProceed()) {
+    shake();
+    return;
+  }
+  if (current === questions.length - 1) {
+    showResults();
+    return;
+  }
+  current++;
+  renderQuestion(current);
+}
+
+function prevQ() {
+  if (current === 0) return;
+  current--;
+  renderQuestion(current);
+}
+
+function canProceed() {
+  const q = questions[current];
+  const a = answers[q.key];
+  if (q.type === 'number') return a && a >= 10 && a <= 100;
+  if (q.type === 'checkbox') return a && a.length > 0;
+  return a !== undefined && a !== '';
+}
+
+function shake() {
+  const btn = document.getElementById('nextBtn');
+  btn.style.animation = 'none';
+  btn.offsetHeight;
+  btn.style.animation = 'shake 0.4s ease';
+  setTimeout(() => btn.style.animation = '', 400);
+}
+
+function updateNav() {
+  document.getElementById('prevBtn').disabled = current === 0;
+  const isLast = current === questions.length - 1;
+  document.getElementById('nextBtn').textContent = isLast ? 'Submit →' : 'Continue →';
+}
+
+function updateProgress() {
+  const pct = Math.round((current / questions.length) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressLabel').textContent = `Question ${current + 1} of ${questions.length}`;
+}
+
+// ─── Results Computation ─────────────────────────────────────────────────────
+function showResults() {
+  document.getElementById('questionsContainer').innerHTML = '';
+  document.getElementById('navRow').style.display = 'none';
+  document.getElementById('progressWrap')?.style && (document.getElementById('progressWrap').style.display = 'none');
+
+  // Addiction Score (Q9–Q13)
+  const addKeys = ['purposeless','distracted','restless','distraction','validation'];
+  const addVals = addKeys.map(k => Number(answers[k]) || 0).filter(v => v > 0);
+  const addScore = addVals.length ? (addVals.reduce((a,b) => a+b) / addVals.length) : 0;
+
+  // Behavioural Score (Q14–Q15)
+  const bhvKeys = ['comparison','comparisonFeel'];
+  const bhvVals = bhvKeys.map(k => Number(answers[k]) || 0).filter(v => v > 0);
+  const bhvScore = bhvVals.length ? (bhvVals.reduce((a,b) => a+b) / bhvVals.length) : 0;
+
+  // Mental Score (Q16–Q20) — depression, anxiety, sleep
+  const menKeys = ['worries','concentration','depression','fluctuation','sleep'];
+  const menVals = menKeys.map(k => Number(answers[k]) || 0).filter(v => v > 0);
+  const menScore = menVals.length ? (menVals.reduce((a,b) => a+b) / menVals.length) : 0;
+
+  // Mental Health Index (depression + worries + sleep)
+  const indexVals = ['depression','worries','sleep'].map(k => Number(answers[k]) || 0).filter(v => v > 0);
+  const mhIndex = indexVals.length ? (indexVals.reduce((a,b) => a+b) / indexVals.length) : 0;
+
+  let risk, riskClass, title, desc;
+  if (mhIndex <= 2) {
+    risk = 'Low'; riskClass = 'low';
+    title = 'Low Mental Health Risk';
+    desc = 'Your responses suggest a generally healthy mental state. You show manageable levels of stress, good emotional regulation, and relatively low social media dependency. Continue practising mindful usage habits and maintain your social connections offline.';
+  } else if (mhIndex <= 3) {
+    risk = 'Medium'; riskClass = 'medium';
+    title = 'Moderate Mental Health Risk';
+    desc = 'Your responses indicate moderate mental health concerns that may be influenced by social media usage. Signs of mild anxiety, comparison behaviour, or sleep disruption were noted. Consider setting daily screen-time limits and engaging in offline activities that bring you joy.';
+  } else {
+    risk = 'High'; riskClass = 'high';
+    title = 'Elevated Mental Health Risk';
+    desc = 'Your responses suggest elevated mental health risk with notable signs of anxiety, depression, or sleep disruption that may be linked to social media behaviour. We strongly encourage speaking with a mental health professional or a trusted person in your life.';
+  }
+
+  const rs = document.getElementById('resultsScreen');
+  rs.style.display = 'block';
+
+  document.getElementById('resultRing').className = 'result-ring ' + riskClass;
+  document.getElementById('resultScore').textContent = mhIndex.toFixed(1);
+  document.getElementById('resultRiskLabel').textContent = risk + ' Risk';
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('addictionScore').textContent = addScore.toFixed(1);
+  document.getElementById('behaviouralScore').textContent = bhvScore.toFixed(1);
+  document.getElementById('mentalScore').textContent = menScore.toFixed(1);
+}
+
+function restart() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  current = 0;
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('navRow').style.display = 'flex';
+  renderQuestion(0);
+}
+
+// ─── Shake Keyframe ───────────────────────────────────────────────────────────
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}`;
+document.head.appendChild(styleEl);
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderQuestion(0);
+</script>
+</body>
+</html>
